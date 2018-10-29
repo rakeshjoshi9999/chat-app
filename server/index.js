@@ -15,10 +15,19 @@ const io = socketIO(server);
 io.on('connection', (socket) => {
     console.log('New User Connected!');
 
+    socket.emit('incomingMessage', {
+        from: "938939393",
+        text: "Hey.. How are you?",
+        createdAt: Date.now()
+    })
+
+    socket.on('createMessage', (message) => {
+        console.log("Sending a message:", message)
+    })
 
     socket.on('disconnect', () => {
         console.log('User Disconnected!')
-    })
+    });
 });
 
 
