@@ -27,3 +27,37 @@ jQuery('#message-form').on('submit', function (e) {
     jQuery('#message-form')[0].reset();
 });
 
+
+//Send location 
+var locationBtn = jQuery('#send-location');
+
+locationBtn.on('click', function (e) {
+    if (!navigator.geolocation) {
+        return alert('Geolocation is not supported by your browser!')
+    }
+
+    navigator.geolocation.getCurrentPosition(function (Position) {
+        // emits the location details
+        socket.emit('sendLocation', {
+            longitude: Position.coords.longitude,
+            latitude: Position.coords.latitude
+        });
+    }, function () {
+        alert('Unable to fetch the location')
+    }, {
+            enableHighAccuracy: true,
+            maximumAge: 30000,
+            timeout: 27000
+        })
+});
+
+// listens to the generated location message form server and displays it on the client browser
+socket.on('newLocMessage', (locData) => {
+    var li = jQuery('<li></li>');
+    var a = jQuery('<a target="_blank">My Current Location</a>');
+    li.text(`${locData.from}: `);
+    a.attr('href', locData.url);
+    li.append(a);
+    jQuery('#messages').append(li);
+})
+
