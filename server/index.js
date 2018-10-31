@@ -2,7 +2,7 @@ const path = require('path');
 const http = require('http');
 const express = require('express');
 const socketIO = require('socket.io');
-const { generateMessage } = require('./utils/message')
+const { generateMessage, generateLocMessage } = require('./utils/message')
 
 var publicPath = path.join(__dirname, '../public');
 const port = process.env.PORT || 3000;
@@ -27,12 +27,18 @@ io.on('connection', (socket) => {
         io.emit('newMessage', generateMessage(message.from, message.text));
     });
 
+    //listen to sendlocation which can be triggered by Send Location button and emits the coordinates
+    socket.on('sendLocation', (coords) => {
+        // emits the generated location message to the client
+        io.emit('newLocMessage', generateLocMessage('Admin', coords.latitude, coords.longitude))
+
+    });
+
     //listen to a event when user disconnects from server
     socket.on('disconnect', () => {
-        console.log('User Disconnected!')
+        socket.broadcast.emit('newMessage', generateMessage('Admin', 'User has left the chat'));
     });
 });
-
 
 server.listen(port, () => {
     console.log(`App Running at Port: ${port}`);
