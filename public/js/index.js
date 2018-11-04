@@ -10,9 +10,10 @@ socket.on('disconnect', () => {
 
 // listening for the new message from server
 socket.on('newMessage', (message) => {
+    var time = moment(message.createdAt).format('h:mm a');
     // console.log('Recieved a message', message);
     var li = jQuery('<li></li>');
-    li.text(`${message.from}:${message.text}`);
+    li.text(`${message.from}:${message.text}:::${time}`);
 
     jQuery('#messages').append(li);
 });
@@ -57,9 +58,10 @@ locationBtn.on('click', function (e) {
 
 // listens to the generated location message form server and displays it on the client browser
 socket.on('newLocMessage', (locData) => {
+    var time = moment(locData.createdAt).format('h:mm a');
     var li = jQuery('<li></li>');
     var a = jQuery('<a target="_blank">My Current Location</a>');
-    li.text(`${locData.from}: `);
+    li.text(`${locData.from} ${time}: `);
     a.attr('href', locData.url);
     li.append(a);
     jQuery('#messages').append(li);
