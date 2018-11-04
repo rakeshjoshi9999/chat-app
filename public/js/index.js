@@ -35,14 +35,18 @@ locationBtn.on('click', function (e) {
     if (!navigator.geolocation) {
         return alert('Geolocation is not supported by your browser!')
     }
-
+    locationBtn.attr('disabled', 'disabled').text('Sending location....')
     navigator.geolocation.getCurrentPosition(function (Position) {
+        locationBtn.removeAttr('disabled', 'disabled').text('Send location')
+
         // emits the location details
         socket.emit('sendLocation', {
             longitude: Position.coords.longitude,
             latitude: Position.coords.latitude
         });
     }, function () {
+        locationBtn.removeAttr('disabled', 'disabled').text('Send location')
+
         alert('Unable to fetch the location')
     }, {
             enableHighAccuracy: true,
