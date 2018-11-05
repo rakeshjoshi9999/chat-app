@@ -1,20 +1,19 @@
 var socket = io();
 
+//Autoscroll
 function scrollToBottom() {
-
+    // selectors
     var messages = $('#messages');
     var newMessage = messages.children('li:last-child');
-
-
 
     var clientHeight = messages.prop('clientHeight');
     var scrollTop = messages.prop('scrollTop');
     var scrollHeight = messages.prop('scrollHeight');
     var newMessageHeight = newMessage.innerHeight();
     var lastMessageHeight = newMessage.prev().innerHeight();
+    var height = clientHeight + scrollTop + newMessageHeight + lastMessageHeight;
 
-
-    if (clientHeight + scrollTop + newMessageHeight + lastMessageHeight >= scrollHeight) {
+    if (height >= scrollHeight) {
         messages.scrollTop(scrollHeight);
     }
 }
