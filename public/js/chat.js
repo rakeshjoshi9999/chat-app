@@ -20,11 +20,31 @@ function scrollToBottom() {
 // listening for the connect event
 socket.on('connect', () => {
     console.log('Connected to the server');
+    var params = $.deparam(window.location.search);
+
+    socket.emit('join', params, function (err) {
+        if (err) {
+            alert('Name and Room Name sholud be provided');
+            window.location.href = '/'
+        } else {
+            console.log('No Error!');
+        }
+    });
 });
 // listening for the disconnect event 
 socket.on('disconnect', () => {
     console.log('Disconnected from server!')
 });
+
+socket.on('updateUserList', (users) => {
+    var ul = jQuery('<ul></ul>');
+
+    users.forEach(function (user) {
+        ul.append(jQuery('<li></li>').text(user));
+    });
+
+    jQuery('#users').html(ul);
+})
 
 // listening for the new message from server
 socket.on('newMessage', (message) => {
@@ -48,7 +68,7 @@ jQuery('#message-form').on('submit', function (e) {
     e.preventDefault();
     // emit a event when a new message is submitted from the form
     socket.emit('createMessage', {
-        from: 'User',
+        from: '',
         text: jQuery('[name=message]').val()
     });
     jQuery('#message-form')[0].reset();
